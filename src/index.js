@@ -73,7 +73,31 @@ const resolvers = {
       }
     },
   },
-  Query: {},
+  Query: {
+    async getMarketPlaceFeeds(parent, args, context, info) {
+      const { userId, pageNo, perPage } = args.input;
+      const { collections } = context;
+      console.log("userIds", userId)
+      const { Catalog, Products } = collections;
+      if( userId ){
+        // let selector = {
+        //   "product.uploadedBy.userId": userId
+        // }
+        // var documentIds = userId.map(function(myId) { return ObjectId.ObjectID.ObjectId(myId); });
+        // console.log("documents", documentIds)
+        let opportunities = await Catalog.find({ "product.uploadedBy.userId": { $in: userId }}).skip( pageNo > 0 ? ( ( pageNo - 1 ) * perPage ) : 0 )
+        .limit(perPage).toArray();
+        // let opportunities = await Catalog.aggregate({ $match:  {"product.uploadedBy.userId": { $eq: userId }}}).toArray();
+        console.log("first if opportunities", opportunities)
+        return opportunities;
+      } else {
+        let opportunities = await Catalog.find().skip( pageNo > 0 ? ( ( pageNo - 1 ) * perPage ) : 0 )
+        .limit( perPage ).toArray();
+        console.log("else opportunities", opportunities)
+        return opportunities;
+      }  
+    },
+  },
   Mutation: {
     async updateAccountpayBookEntry(parent, args, context, info) {
       let updateResponse = await updateUserAccountBook(context, args.input);
