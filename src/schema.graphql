@@ -52,12 +52,21 @@ extend type Query {
   getMarketPlaceFeeds(input: opportunityInput): [Opportunities]
 }
 
+input VieworCartInput {
+  productId: String!
+  flag: String!
+}
+type output {
+  success: Boolean
+  status: Int
+  message: String
+}
 extend type Mutation {
   deleteAccount(userId: String!): deleteOutput
   updateUserPassword(input: updatePassword): updatePasswordOutPut
   updateAccountpayBookEntry(input:accountBookInput):AccountBook
   updateAvailableFulfillmentMethodEntry(input:AvailableFulfillmentMethodInput):[AvailableFulfillmentMethod]
-
+  addProductVieworCart(input: VieworCartInput): output
 }
 
 
@@ -65,6 +74,7 @@ extend type Product {
   uploadedBy: uploadedBy
   upVotes: Int
   productViews: Int
+  totalCarts: Int
   ancestorId:ID
    parentId:ID
 }
@@ -72,6 +82,7 @@ extend input ProductInput {
   uploadedBy: uploadedByinput
   upVotes: Int
   productViews: Int
+  totalCarts: Int
 }
 
 extend type CatalogProduct {
